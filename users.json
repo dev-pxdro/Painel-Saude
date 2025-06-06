@@ -1,0 +1,17 @@
+[
+  {
+    "username": "pxdro",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "username": "bianca",
+    "password": "rodolfo123",
+    "role": "enfermeira"
+  },
+  {
+    "username": "Doutor Augusto",
+    "password": "123456",
+    "role": "medico"
+  }
+]
