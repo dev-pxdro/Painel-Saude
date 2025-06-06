@@ -47,10 +47,10 @@ def salvar_encaminhamentos(lista):
         json.dump(lista, f, indent=2)
 
 def usuario_logado():
-    return 'username' in session
+    return 'usuario' in session
 
 def tipo_usuario():
-    return session.get('role', None)
+    return session.get('tipo', None)
 
 def admin_required(f):
     def wrapper(*args, **kwargs):
@@ -60,11 +60,7 @@ def admin_required(f):
     wrapper.__name__ = f.__name__
     return wrapper
 
-# --------- 🌐 Rotas de arquivos estáticos ---------
-@app.route('/<path:filename>')
-def serve_html(filename):
-    return send_from_directory('html', filename)
-
+# --------- 🌐 Arquivos Estáticos ---------
 @app.route('/css/<path:filename>')
 def serve_css(filename):
     return send_from_directory('css', filename)
@@ -73,7 +69,15 @@ def serve_css(filename):
 def serve_js(filename):
     return send_from_directory('js', filename)
 
-# --------- 🔐 Autenticação ---------
+@app.route('/<path:filename>')
+def serve_html(filename):
+    return send_from_directory('html', filename)
+
+@app.route('/')
+def index():
+    return redirect(url_for('controle'))
+
+# --------- 🔐 Login ---------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     erro = None
@@ -97,16 +101,15 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-# --------- 🔧 Controle ---------
+# --------- 📋 Controle ---------
 @app.route('/controle')
 def controle():
-    if 'usuario' not in session or 'tipo' not in session:
+    if not usuario_logado():
         return redirect(url_for('login'))
 
     return render_template('controle.html',
                            usuario=session['usuario'],
                            tipo=session['tipo'])
-
 
 @app.route('/usuarios')
 def usuarios():
@@ -129,7 +132,6 @@ def tv():
 # --------- 🔊 WebSocket ---------
 @socketio.on('nova-chamada')
 def handle_nova_chamada(data):
-    print(f"Nova chamada recebida: {data}")
     socketio.emit('nova-chamada', data)
 
     if data.get('setor') == 'triagem':
@@ -140,14 +142,14 @@ def handle_nova_chamada(data):
         })
         salvar_triagem(triagem)
 
-# --------- 📋 Triagem ---------
+# --------- 📦 Triagem ---------
 @app.route('/api/triagem', methods=['GET'])
 def listar_triagem():
     if not usuario_logado():
         return jsonify({'erro': 'Login necessário'}), 401
     return jsonify(carregar_triagem())
 
-# --------- 📦 Encaminhamentos ---------
+# --------- 🚚 Encaminhamentos ---------
 @app.route('/api/encaminhamentos', methods=['POST'])
 def novo_encaminhamento():
     if not usuario_logado():
@@ -161,16 +163,14 @@ def novo_encaminhamento():
     if not nome or not destino or not responsavel:
         return jsonify({'erro': 'Dados incompletos'}), 400
 
-    # Remover da triagem
     triagem = carregar_triagem()
     triagem = [p for p in triagem if p['nome'] != nome]
     salvar_triagem(triagem)
 
-    # Adicionar aos encaminhamentos
     encaminhamentos = carregar_encaminhamentos()
     encaminhamentos.append({
         "nome": nome,
-        "encaminhado_por": session['username'],
+        "encaminhado_por": session['usuario'],
         "destino": destino,
         "responsavel": responsavel,
         "status": "aguardando"
@@ -184,8 +184,8 @@ def listar_encaminhamentos():
     if not usuario_logado():
         return jsonify({'erro': 'Login necessário'}), 401
 
-    usuario = session['username']
-    role = session['role']
+    usuario = session['usuario']
+    role = session['tipo']
     encaminhamentos = carregar_encaminhamentos()
 
     if role == 'admin' or role == 'enfermeira':
@@ -206,26 +206,26 @@ def concluir_encaminhamento():
 
     encaminhamentos = carregar_encaminhamentos()
     for e in encaminhamentos:
-        if e['nome'] == nome and e['responsavel'] == session['username']:
+        if e['nome'] == nome and e['responsavel'] == session['usuario']:
             e['status'] = 'chamado'
 
     salvar_encaminhamentos(encaminhamentos)
     return jsonify({'mensagem': 'Paciente chamado com sucesso'}), 200
 
-@app.route("/meus_pacientes", methods=["GET"])
+@app.route('/meus_pacientes', methods=["GET"])
 def meus_pacientes():
     if not usuario_logado():
         return jsonify({'erro': 'Login necessário'}), 401
 
     try:
         todos = carregar_encaminhamentos()
-        usuario = session['username']
+        usuario = session['usuario']
         filtrados = [p for p in todos if p['responsavel'] == usuario and p['status'] == 'aguardando']
         return jsonify(filtrados)
     except FileNotFoundError:
         return jsonify([])
 
-# --------- 📞 Chamada de Profissional ---------
+# --------- 📞 Chamar Profissional ---------
 @app.route('/api/chamar', methods=['POST'])
 def chamar_profissional():
     if not usuario_logado():
@@ -235,7 +235,7 @@ def chamar_profissional():
     nome = dados.get('nome')
     consultorio = dados.get('consultorio')
     setor = dados.get('setor', 'Consulta')
-    profissional = session['username']
+    profissional = session['usuario']
 
     socketio.emit('nova-chamada', {
         'nome': nome,
@@ -294,8 +294,6 @@ def deletar_usuario(username):
 
     salvar_usuarios(novos)
     return jsonify({'mensagem': 'Usuário removido com sucesso'}), 200
-
-
 
 # --------- 🚀 Inicialização ---------
 if __name__ == '__main__':
