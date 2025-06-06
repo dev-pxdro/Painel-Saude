@@ -1,0 +1,229 @@
+/* Variáveis de Design */
+:root {
+  --primary: #4361ee;
+  --primary-dark: #3a0ca3;
+  --secondary: #4895ef;
+  --danger: #f72585;
+  --success: #4cc9f0;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --gray: #6c757d;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Reset e Estilos Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f7fa;
+  color: var(--dark);
+  line-height: 1.6;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 30px;
+}
+
+h1 {
+  color: var(--primary-dark);
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+h2 {
+  color: var(--primary);
+  margin: 25px 0 15px;
+  font-weight: 600;
+  font-size: 1.5rem;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+/* Formulário de Usuário */
+#form-usuario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+#form-usuario input,
+#form-usuario select {
+  padding: 12px 15px;
+  border: 1px solid #ced4da;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+#form-usuario input:focus,
+#form-usuario select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+#form-usuario button {
+  grid-column: 1 / -1;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#form-usuario button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Lista de Usuários */
+#lista-usuarios {
+  display: grid;
+  gap: 15px;
+}
+
+.usuario-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  padding: 15px 20px;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+}
+
+.usuario-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.usuario-nome {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.usuario-tipo {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+/* Cores para tipos de usuários */
+.usuario-tipo[data-tipo="admin"] {
+  background-color: #e0c4ff;
+  color: #5a189a;
+}
+
+.usuario-tipo[data-tipo="enfermeira"] {
+  background-color: #bde0fe;
+  color: #1d4e89;
+}
+
+.usuario-tipo[data-tipo="medico"] {
+  background-color: #caffbf;
+  color: #2b9348;
+}
+
+.usuario-tipo[data-tipo="dentista"] {
+  background-color: #ffd6ff;
+  color: #9d4edd;
+}
+
+.usuario-tipo[data-tipo="nutricao"] {
+  background-color: #ffef9f;
+  color: #f77f00;
+}
+
+.btn-excluir {
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-excluir:hover {
+  background-color: #d90429;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+  
+  #form-usuario {
+    grid-template-columns: 1fr;
+  }
+  
+  .usuario-card {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .usuario-acoes {
+    justify-self: end;
+  }
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.usuario-card {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.novo-usuario {
+  animation: pulse 1.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 201, 240, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 201, 240, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 201, 240, 0);
+  }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Controle de Chamadas</title>
+  <link rel="stylesheet" href="../css/controle.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-item" title="Chamadas">
+      🏥<span class="label">Chamadas</span>
+    </div>
+    {% if tipo == 'admin' %}
+    <a href="/usuarios" class="nav-item">
+      <span class="icon">👥</span>
+      <span class="text">Usuários</span>
+    </a>
+    {% endif %}
+    <a href="/logout" class="sidebar-item" title="Sair">
+      🚪<span class="label">Logout</span>
+    </a>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2>UBS Barigui</h2>
+    </div>
+    <div class="topbar-right">
+      <span>👤 {{ usuario }} ({{ tipo }})</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Controle de Chamadas</h1>
+    <form id="form-chamada">
+      <input type="text" id="nome" placeholder="Nome do Paciente" required />
+      <select id="setor" required>
+        <option value="">Selecione o Setor</option>
+        <option value="triagem">Triagem</option>
+        <option value="consulta">Consulta</option>
+        <option value="dentista">Dentista</option>
+        <option value="preventivo">Preventivo</option>
+        <option value="nutricao">Nutrição</option>
+      </select>
+      <select id="consultorio" required>
+        <option value="">Selecione o Local</option>
+        <option value="consultório 1">Consultório 1</option>
+        <option value="consultório 2">Consultório 2</option>
+        <option value="sala de enfermagem">Sala de Enfermagem</option>
+        <option value="sala de odontologia">Sala de Odontologia</option>
+      </select>
+      <input type="text" id="medico" placeholder="Nome do Profissional" required />
+      <button type="submit">Chamar</button>
+    </form>
+
+    <div id="recentes-container">
+      <h2>Chamadas Recentes</h2>
+      <div id="historico"></div>
+    </div>
+
+    <div id="triagem-container">
+      <h2>Pacientes na Triagem</h2>
+      <ul id="lista-triagem"></ul>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="../js/controle.js"></script>
+</body>
+</html>

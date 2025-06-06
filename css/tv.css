@@ -1,0 +1,185 @@
+/* Reset e Estilos Globais */
+:root {
+  --primary-color: #2563eb;
+  --background-color: #0f172a; /* Fundo escuro para melhor contraste */
+  --text-color: #f8fafc;
+  --card-bg: #1e293b;
+  --highlight-color: #f97316;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --font-large: 3rem;
+  --font-medium: 2rem;
+  --font-small: 1.5rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Container Principal */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.container h1 {
+  font-size: var(--font-medium);
+  margin-bottom: 2rem;
+  color: var(--highlight-color);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Área de Chamadas */
+#chamadas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.chamada-item {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  border-left: 6px solid var(--primary-color);
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.chamada-item.high-priority {
+  border-left-color: var(--highlight-color);
+  animation: pulse 2s infinite;
+}
+
+.chamada-item .paciente {
+  font-size: var(--font-large);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.chamada-item .setor {
+  font-size: var(--font-small);
+  color: var(--highlight-color);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.chamada-item .local {
+  font-size: var(--font-small);
+  margin-bottom: 0.5rem;
+}
+
+.chamada-item .profissional {
+  font-size: var(--font-small);
+  font-style: italic;
+}
+
+/* Animações */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+  }
+}
+
+/* Responsividade para Telas Grandes (TV) */
+@media screen and (min-width: 1920px) {
+  :root {
+    --font-large: 4rem;
+    --font-medium: 3rem;
+    --font-small: 2rem;
+  }
+  
+  .container {
+    padding: 4rem;
+  }
+  
+  #chamadas {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+}
+
+/* Modo Retrato (Mobile) */
+@media screen and (max-width: 768px) {
+  :root {
+    --font-large: 2.5rem;
+    --font-medium: 1.8rem;
+    --font-small: 1.2rem;
+  }
+  
+  #chamadas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Efeitos de Destaque */
+.chamada-item.new {
+  animation: highlight 1.5s ease;
+}
+
+@keyframes highlight {
+  0% {
+    background-color: var(--highlight-color);
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    background-color: var(--card-bg);
+    transform: scale(1);
+  }
+}
+
+/* Barra de Rolagem (caso necessário) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--highlight-color);
+}
